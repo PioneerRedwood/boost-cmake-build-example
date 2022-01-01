@@ -1,0 +1,50 @@
+# boost custom macros
+# refered cef_macros
+
+macro(PRINT_BOOST_CONFIG)
+    message(STATUS "*** BOOST CONFIGURATION SETTINGS ***")
+    message(STATUS "Generator:                    ${CMAKE_GENERATOR}")
+    message(STATUS "Platform:                     ${CMAKE_SYSTEM_NAME}")
+    message(STATUS "Project architecture:         ${PROJECT_ARCH}")
+    message(STATUS "Build type:                   ${CMAKE_BUILD_TYPE}")
+    message(STATUS "Binary distribution root:     ${_BOOST_ROOT}")
+
+    # need to set STANDARD LIBS
+    # set(_libraries ${BOOST_STANDARD_LIBS})
+    # message(STATUS "Standard libraries:           ${_libraries}")
+
+    # message(STATUS "Compile defines:              ${BOOST_COMPILER_DEFINES}")
+    # message(STATUS "Compile defines (Debug):      ${BOOST_COMPILER_DEFINES_DEBUG}")
+    # message(STATUS "Compile defines (Release):    ${BOOST_COMPILER_DEFINES_RELEASE}")
+    # message(STATUS "C compile flags:              ${BOOST_COMPILER_FLAGS} ${BOOST_C_COMPILER_FLAGS}")
+    # message(STATUS "C compile flags (Debug):      ${BOOST_COMPILER_FLAGS_DEBUG} ${BOOST_C_COMPILER_FLAGS_DEBUG}")
+    # message(STATUS "C compile flags (Release):    ${BOOST_COMPILER_FLAGS_RELEASE} ${BOOST_C_COMPILER_FLAGS_RELEASE}")
+    # message(STATUS "C++ compile flags:            ${BOOST_COMPILER_FLAGS} ${BOOST_CXX_COMPILER_FLAGS}")
+    # message(STATUS "C++ compile flags (Debug):    ${BOOST_COMPILER_FLAGS_DEBUG} ${BOOST_CXX_COMPILER_FLAGS_DEBUG}")
+    # message(STATUS "C++ compile flags (Release):  ${BOOST_COMPILER_FLAGS_RELEASE} ${BOOST_CXX_COMPILER_FLAGS_RELEASE}")
+    # message(STATUS "Exe link flags:               ${BOOST_LINKER_FLAGS} ${BOOST_EXE_LINKER_FLAGS}")
+    # message(STATUS "Exe link flags (Debug):       ${BOOST_LINKER_FLAGS_DEBUG} ${BOOST_EXE_LINKER_FLAGS_DEBUG}")
+    # message(STATUS "Exe link flags (Release):     ${BOOST_LINKER_FLAGS_RELEASE} ${BOOST_EXE_LINKER_FLAGS_RELEASE}")
+    # message(STATUS "Shared link flags:            ${BOOST_LINKER_FLAGS} ${BOOST_SHARED_LINKER_FLAGS}")
+    # message(STATUS "Shared link flags (Debug):    ${BOOST_LINKER_FLAGS_DEBUG} ${BOOST_SHARED_LINKER_FLAGS_DEBUG}")
+    # message(STATUS "Shared link flags (Release):  ${BOOST_LINKER_FLAGS_RELEASE} ${BOOST_SHARED_LINKER_FLAGS_RELEASE}")
+
+    # message(STATUS "BOOST Binary files:             ${BOOST_BINARY_FILES}")
+    # message(STATUS "BOOST Resource files:           ${BOOST_RESOURCE_FILES}")
+endmacro()
+
+macro(APPEND_PLATFORM_SOURCES name_of_list)
+    if(OS_LINUX AND ${name_of_list}_LINUX)
+        list(APPEND ${name_of_list} ${${name_of_list}_LINUX})
+    endif()
+    if(OS_POSIX AND ${name_of_list}_POSIX)
+        list(APPEND ${name_of_list} ${${name_of_list}_POSIX})
+    endif()
+    if(OS_WINDOWS AND ${name_of_list}_WINDOWS)
+        list(APPEND ${name_of_list} ${${name_of_list}_WINDOWS})
+    endif()
+    if(OS_MAC AND ${name_of_list}_MAC)
+        list(APPEND ${name_of_list} ${${name_of_list}_MAC})
+    endif()
+endmacro()
+
