@@ -7,6 +7,8 @@ set(BAN_TIMER_SRCS
 source_group(ban_timer\\\\timer FILES ${BAN_TIMER_SRCS})
 
 set(BAN_TIMER_MAIN
+
+
     main.cpp
 )
 source_group(ban_timer FILES ${BAN_TIMER_MAIN})
@@ -38,6 +40,3 @@ add_executable(${BAN_TARGET}
 target_include_directories(
     ${BAN_TARGET} PRIVATE ${BAN_TIMER_SRCS}
 )
-
-# Qt + Cef 해봐야함
-# boost는 필요한 파일만 가져오면 될듯
