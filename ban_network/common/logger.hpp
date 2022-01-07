@@ -5,8 +5,7 @@
 namespace ban {
 namespace log {
 static void Logging(const char* data, ...) {
-    using posix = boost::posix_time;
-    
+   
     char buffer[512] = { 0, };
     va_list argueList;
     va_start(argueList, data);

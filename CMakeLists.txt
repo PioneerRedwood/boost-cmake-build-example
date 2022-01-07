@@ -25,8 +25,16 @@ endif()
 #   add_subdirectory(ban)
 # endif()
 
-# target all
 # add_subdirectory(simple_server)
 # add_subdirectory(simple_client)
 
-add_subdirectory(ban_network)
+# add_subdirectory(ban_network/common)
+add_subdirectory(ban_network/client)
+add_subdirectory(ban_network/server)
+
+# set_target_properties(${BOOST_CMAKE_EXAMPLES}
+#     PROPERTIES
+#     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/lib"
+#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/lib"
+#     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/build/bin"
+#     )

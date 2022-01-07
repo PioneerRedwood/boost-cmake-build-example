@@ -11,30 +11,6 @@ using tcp = io::ip::tcp;
 
 namespace ban {
 // Session
-#if CLEINT
-LobbySesson::LobbySession(io::io_context& context, 
-                          TSDeque<OwnedMessage<LobbyMsg>> read_deque) 
-  : context_(context), read_deque_(read_deque) {}
-
-void LobbySession::Start(tcp::endpoint endpoint) {
-  socket_.async_connect(endpoint,
-    [this](const boost::system::error_code& error)->void {
-      if(error) {
-        log::Logging("[DEBUG] LobbySession::Start %d", error.value());
-        is_connected_ = false;
-        Stop();
-        return;
-      } else {
-        log::Logging("[DEBUG] LobbySession::Start");
-        is_connected_ = true;
-        if(owner_) {
-          owner_->StartPing();
-        }
-      }
-    });
-}
-#endif
-
 LobbySession::LobbySession(io::io_context& context, 
                           tcp::socket socket,
                           TSDeque<OwnedMessage<LobbyMsg>>& read_deque)
@@ -47,15 +23,8 @@ void LobbySession::Start(uint32_t id) {
   ReadHeader();
 }
 
-void LobbySession::Start(std::time_t conn_time = 0, uint32_t id) {
-  is_connected_ = true;
-  id_ = id;
-  
-  ReadHeader();
-}
-
 bool LobbySession::Connected() const {
-  return is_connected_ & socket_.is_open();
+  return is_connected_ && socket_.is_open();
 }
 
 void LobbySession::Stop() {
@@ -87,7 +56,7 @@ const uint32_t LobbySession::GetId() {
 
 void LobbySession::WriteHeader() {
   io::async_write(socket_, io::buffer(&write_deque_.front().header_, sizeof(uint32_t)), 
-    [this](boost::system::error_code& error, std::size_t bytes)->void {
+    [this](boost::system::error_code error, std::size_t bytes)->void {
       if(error) {
         log::Logging("[ERROR] LobbySession::WriteHeader(): %d", error.value());
         return ;
@@ -107,7 +76,7 @@ void LobbySession::WriteHeader() {
 
 void LobbySession::WriteBody() {
   io::async_write(socket_, io::buffer(write_deque_.front().body_.data(), write_deque_.front().body_.size()),
-    [this](boost::system::error_code& error, std::size_t bytes)->void {
+    [this](boost::system::error_code error, std::size_t bytes)->void {
       if(error) {
         log::Logging("[ERROR] LobbySession::WriteBody(): %d", error.value());
         return;
@@ -123,7 +92,7 @@ void LobbySession::WriteBody() {
 
 void LobbySession::ReadHeader() {
   io::async_read(socket_, io::buffer(&temp_msg_.header_, sizeof(MessageHeader<LobbyMsg>)), 
-    [this](boost::system::error_code& error, std::size_t bytes)->void {
+    [this](auto error, std::size_t bytes) {
       if(error) {
         log::Logging("[ERROR] LobbySession::ReadHeader(): %d", error.value());
         return;
@@ -141,7 +110,7 @@ void LobbySession::ReadHeader() {
 
 void LobbySession::ReadBody() {
   io::async_read(socket_, io::buffer(temp_msg_.body_.data(), temp_msg_.body_.size()),
-    [this](boost::system::error_code& error, std::size_t bytes)->void {
+    [this](auto error, std::size_t bytes) {
       if(error) {
         log::Logging("[ERROR] LobbySession::ReadBody(): %d", error.value());
         return;

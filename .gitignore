@@ -54,3 +54,6 @@ _deps
 *.vcxproj
 *.filters
 *.user
+
+# CMake
+*.dir

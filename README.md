@@ -13,3 +13,4 @@ boost-asio-network의 약자
 ### ban_network
 - [boost-asio-network](https://github.com/PioneerRedwood/boost-asio-network)에서 구현했던 서버, 클라이언트 가져오기
 - 공통부분은 `common`으로 넣기
+- client, server 빌드 시스템 생성기 완료

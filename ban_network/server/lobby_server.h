@@ -12,7 +12,7 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
 namespace ban {
-namespace {
+
 class LobbyServer {
 public:
   LobbyServer(io::io_context& );
@@ -22,9 +22,9 @@ public:
   void Stop();
 
   void Unicast(const Message<LobbyMsg>& , std::shared_ptr<LobbySession> );
-  void Broadcast(const Message<LobbyMsg>& , std::shared_ptr<LobbySession> exclude = nullptr);
+  void Broadcast(const Message<LobbyMsg>& , std::shared_ptr<LobbySession> );
   
-  void Tick(std::size_t max = -1, bool is_wait = false);
+  void Tick(std::size_t , bool );
 
 private:
   void Accept();
@@ -43,10 +43,6 @@ private:
   TSDeque<OwnedMessage<LobbyMsg>> read_deque_;
 
   std::thread thread_;
-};
-
-
-
-} 
+}; 
 
 } // ban

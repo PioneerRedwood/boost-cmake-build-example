@@ -5,7 +5,6 @@
 #include "server_option.h"
 #include "lobby_server.h"
 
-
 namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
@@ -65,7 +64,7 @@ void LobbyServer::Tick(std::size_t max = -1, bool is_wait = false) {
 }
 
 void LobbyServer::Accept() {
-  acceptor_.async_accept([this](boost::system::error_code& error, tcp::socket socket) {
+  acceptor_.async_accept([this](boost::system::error_code error, tcp::socket socket) {
     if(error) {
       log::Logging("[ERROR] LobbyServer::Accept .. %d", error.value());
     } else {

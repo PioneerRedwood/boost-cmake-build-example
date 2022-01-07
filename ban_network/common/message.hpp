@@ -4,6 +4,7 @@
 #include <ostream>
 
 namespace ban {
+
 struct vector2
 {
 	float x;
@@ -32,9 +33,9 @@ struct MessageHeader {
 template<typename T>
 struct Message
 {
-	MessageHeader<T> header_{};
+	MessageHeader<T> header_;
 	std::vector<uint8_t> body_;
-public:
+
 	std::size_t size() const { return body_.size(); }
 
 	friend std::ostream& operator << (std::ostream& os, const Message<T>& msg) {
@@ -117,24 +118,13 @@ public:
 		Read(data.y, start_index + sizeof(float));
 		Read(data.z, start_index + sizeof(float) + sizeof(float));
 	}
-public:
+
 	// Read data, with starting given `start_index`
 	template<typename DataType>
 	void Read(DataType& data, int start_index) {
 		static_assert(std::is_standard_layout_v<DataType>, "Data is too complex to be pulled from vector");
 		std::memcpy(&data, body_.data() + start_index, sizeof(DataType));
 	}
-};
-
-template<typename T>
-struct OwnedMessage {
-  std::shared_ptr<Session<T>> remote_ = nullptr;
-  Message<T> msg_;
-
-  friend std::ostream& operator<<(std::ostream& os, const OwnedMessage<T>& msg) {
-    os << msg.msg_;
-    return os;
-  }
 };
 
 enum class LobbyMsg : uint32_t {
