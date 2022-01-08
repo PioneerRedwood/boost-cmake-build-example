@@ -14,3 +14,4 @@ boost-asio-network의 약자
 - [boost-asio-network](https://github.com/PioneerRedwood/boost-asio-network)에서 구현했던 서버, 클라이언트 가져오기
 - 공통부분은 `common`으로 넣기
 - client, server 빌드 시스템 생성기 완료
+- 클라이언트 메시지 수신 부분 스레드 안전하게 다시 구현하기

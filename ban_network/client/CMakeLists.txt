@@ -4,7 +4,6 @@ set(BANCLIENT "ban_client")
 # preprocessor
 add_compile_definitions(
     _WIN32_WINNT=0x0501
-    CLIENT=1
     )
 
 # common srcs
@@ -20,9 +19,12 @@ source_group(common FILES ${BAN_COMMON_SRCS})
 
 # sources core srcs
 set(BANCLIENT_CORE_SRCS
+    client_option.h
+    # client_session.h
+    # client_session.cpp
     lobby_client.h
     lobby_client.cpp
-    client_option.h
+    
     main.cpp
     )
 source_group(client FILES ${BANCLIENT_CORE_SRCS})

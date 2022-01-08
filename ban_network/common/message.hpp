@@ -33,8 +33,8 @@ struct MessageHeader {
 template<typename T>
 struct Message
 {
-	MessageHeader<T> header_;
-	std::vector<uint8_t> body_;
+	MessageHeader<T> header_{};
+	std::vector<uint8_t> body_{};
 
 	std::size_t size() const { return body_.size(); }
 

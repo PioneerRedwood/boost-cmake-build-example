@@ -11,17 +11,12 @@ using tcp = io::ip::tcp;
 
 namespace ban {
 
+class ClientSession;
+
 class LobbyClient {
 public:
-	class ClientSession : public LobbySession {
-	public:
-		ClientSession(io::io_context&, std::weak_ptr<LobbyClient>, TSDeque<OwnedMessage<LobbyMsg>>&);
-		void Start(tcp::endpoint endpoint);
-
-	private:
-		std::weak_ptr<LobbyClient> owner_;
-	};
-
+  using Msg = Message<LobbyMsg>;
+  using RemoteMsg = OwnedMessage<LobbySession, LobbyMsg>;
 public:
   LobbyClient(io::io_context&);
   ~LobbyClient();
@@ -31,11 +26,12 @@ public:
 
 private:
   io::io_context& context_;
-  std::shared_ptr<ClientSession> conn_;
-  
-  TSDeque<OwnedMessage<LobbyMsg>> read_deque_;
   io::steady_timer timer_;
-
+  std::unique_ptr<LobbySession> conn_;
+  
+  TSDeque<RemoteMsg> read_deque_;
+  
   std::thread thread_;
+  std::thread biz_thread_;
 };
 }

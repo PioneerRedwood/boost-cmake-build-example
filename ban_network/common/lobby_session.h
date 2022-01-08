@@ -9,15 +9,19 @@ namespace io = boost::asio;
 using tcp = io::ip::tcp;
 
 namespace ban {
+enum class Owner : uint16_t {
+  SERVER = 0,
+  CLIENT = 1,
+};
 
 class LobbySession;
 
-template<typename T>
+template<typename Remote, typename MsgType>
 struct OwnedMessage {
-    std::shared_ptr<LobbySession> remote_ = nullptr;
-    Message<T> msg_;
+    std::shared_ptr<Remote> remote_ = nullptr;
+    Message<MsgType> msg_;
 
-    friend std::ostream& operator<<(std::ostream& os, const OwnedMessage<T>& msg) {
+    friend std::ostream& operator<<(std::ostream& os, const OwnedMessage<Remote, MsgType>& msg) {
         os << msg.msg_;
         return os;
     }
@@ -27,18 +31,25 @@ enum class LobbyMsg : uint32_t;
 
 class LobbySession : public std::enable_shared_from_this<LobbySession> {
 public:
-  LobbySession(io::io_context&, tcp::socket, TSDeque<OwnedMessage<LobbyMsg>>& );
+  using Msg = Message<LobbyMsg>;
+  using RemoteMsg = OwnedMessage<LobbySession, LobbyMsg>;
+public:
+  LobbySession(Owner, io::io_context&, tcp::socket, TSDeque<RemoteMsg>& );
+  ~LobbySession() {};
+  
+  void ConnectToClient(uint32_t);
+  void ConnectToServer(const tcp::resolver::results_type&);
 
-  void Start(uint32_t);
   void Stop();
   void Restart();
 
-  bool Connected() const;
-  void Send(const Message<LobbyMsg>&);
+  bool IsConnected() const;
+  void Disconnect();
+  void Send(const Msg&);
 
-  tcp::socket& GetSocket() {return socket_;}
+  tcp::socket& GetSocket() { return socket_; }
 
-  const uint32_t GetId();
+  uint32_t GetId() { return id_; }
 
 private:
   void WriteHeader();
@@ -52,9 +63,11 @@ protected:
   io::io_context& context_;
   tcp::socket socket_;
 
-  TSDeque<OwnedMessage<LobbyMsg>>& read_deque_;
-  TSDeque<Message<LobbyMsg>> write_deque_;
-  Message<LobbyMsg> temp_msg_;
+  TSDeque<RemoteMsg>& read_deque_;
+  TSDeque<Msg> write_deque_;
+  Msg temp_msg_;
+
+  Owner owner_ = Owner::SERVER;
 
   bool is_connected_ = false;
   // Session info

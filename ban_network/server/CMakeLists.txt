@@ -4,7 +4,6 @@ set(BANSERVER "ban_server")
 # preprocessor
 add_compile_definitions(
     _WIN32_WINNT=0x0501
-    SERVER=1
     )
 
 # common srcs

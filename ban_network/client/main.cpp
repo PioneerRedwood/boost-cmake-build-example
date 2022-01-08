@@ -6,8 +6,7 @@ int main() {
   ban::LobbyClient client(context);
   
   client.Start();
-
   context.run();
-
+  
   return 0;
 }
