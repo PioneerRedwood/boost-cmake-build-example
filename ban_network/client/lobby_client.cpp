@@ -1,6 +1,11 @@
-#include <ctime>
-#include <exception>
-#include <type_traits>
+/**
+ * @file lobby_client.cpp
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <boost/asio.hpp>
 
 #include "common/lobby_session.h"
@@ -28,10 +33,6 @@ LobbyClient::~LobbyClient() {
     thread_.join();
   }
 
-  if (biz_thread_.joinable()) {
-    biz_thread_.join();
-  }
-
   context_.stop();
   log::Logging("[DEBUG] LobbyClient stopped ..");
 }
@@ -39,7 +40,8 @@ LobbyClient::~LobbyClient() {
 void LobbyClient::Start() {
   log::Logging("[DEBUG] LobbyClient started ..");
 
-  conn_ = std::make_unique<LobbySession>(Owner::CLIENT, context_, tcp::socket(context_), read_deque_);
+  conn_ = std::make_unique<LobbySession>(
+    Owner::CLIENT, context_, tcp::socket(context_), read_deque_);
   
   tcp::resolver resolver(context_);
   tcp::resolver::results_type endpoints = resolver.resolve(SERVER_ADDRESS, std::to_string(PORT));
@@ -47,28 +49,14 @@ void LobbyClient::Start() {
   conn_->ConnectToServer(endpoints);
 
   thread_ = std::thread([this]() { context_.run(); });
-  /*biz_thread_ = std::thread([this]() {
-  * 
-    while (true) {
-      if (false) {
-        read_deque_.wait();
-      }
-
-      std::size_t count = 0;
-      while (count < -1 && !read_deque_.empty()) {
-        auto temp = read_deque_.pop_front();
-
-        log::Logging("[DEBUG] Client Tick.. {Remote:%d, ID:%d}", temp.remote_, temp.msg_.header_.id_);
-        count++;
-      }
-
-      if (!conn_->IsConnected()) {
-        break;
-      }
-    }
-    });*/
 
   Heartbeat();
+}
+
+void LobbyClient::Send(const Msg& msg) {
+  if (IsConnected()) {
+    conn_->Send(msg);
+  }
 }
 
 void LobbyClient::Heartbeat() {
@@ -80,28 +68,35 @@ void LobbyClient::Heartbeat() {
           error.value(), error.message().c_str());
         return;
       } else {
-        if (conn_->IsConnected()) {
+        if (conn_ && conn_->IsConnected()) {
           Msg msg;
           msg.header_.id_ = LobbyMsg::HEARTBEAT;
-          
-          //msg << "Hello server!";
-          conn_->Send(msg);
+
+          Send(msg);
         } else {
           log::Logging("[DEBUG] LobbyClient::Heartbeat but not connected with server");
         }
-
-        /*{
-          read_deque_.wait();
-          if (!read_deque_.empty()) {
-            auto temp = read_deque_.pop_front();
-
-            log::Logging("[DEBUG] Client Tick.. {Remote:%d, ID:%d}", temp.remote_, temp.msg_.header_.id_);
-          }
-        }*/
       }
-
+      
       Heartbeat();
     });
+}
+
+void LobbyClient::Tick() {
+  while (!read_deque_.empty()) {
+    Msg temp = read_deque_.pop_front().msg_;
+
+    switch (temp.header_.id_) {
+    case LobbyMsg::HEARTBEAT: {
+      log::Logging("[DEBUG] Heartbeating echo");
+
+      break;
+    }
+    default: {
+      break;
+    }
+    } // switch(data.header_.id_) -- LobbyMsg
+  }
 }
 
 } // ban

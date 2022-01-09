@@ -1,3 +1,11 @@
+/**
+ * @file lobby_session.cpp
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <boost/asio.hpp>
 
 #include "logger.hpp"
@@ -83,15 +91,18 @@ void LobbySession::Restart() {
 
 void LobbySession::WriteHeader() {
   io::async_write(socket_, 
-    io::buffer(&write_deque_.front().header_, sizeof(uint32_t)), 
+    io::buffer(&write_deque_.front().header_, sizeof(MessageHeader<LobbyMsg>)),
     [this](boost::system::error_code error, std::size_t bytes)->void {
       if(error) {
         log::Logging("[ERROR] LobbySession::WriteHeader(): %d: %s", 
           error.value(), error.message().c_str());
+        socket_.close();
         return ;
       } else {
         if(write_deque_.front().body_.size() > 0) {
+
           WriteBody();
+
         } else {
           write_deque_.pop_front();
 
@@ -110,6 +121,7 @@ void LobbySession::WriteBody() {
       if(error) {
         log::Logging("[ERROR] LobbySession::WriteBody() %d: %s", 
           error.value(), error.message().c_str());
+        socket_.close();
         return;
       } else {
         write_deque_.pop_front();
@@ -162,7 +174,12 @@ void LobbySession::ReadBody() {
 
 void LobbySession::Store() {
   //log::Logging("[DEBUG] LobbySession::Store() {Msg {id: %d} {size: %d}", temp_msg_.header_.id_, temp_msg_.header_.size_);
-  read_deque_.push_back({this->shared_from_this(), temp_msg_});
+  if (owner_ == Owner::SERVER) {
+    read_deque_.push_back({ this->shared_from_this(), temp_msg_ });
+  } else {
+    read_deque_.push_back({ nullptr, temp_msg_ });
+  }
+
 
   ReadHeader();
 }

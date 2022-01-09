@@ -1,3 +1,11 @@
+/**
+ * @file lobby_client.h
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #pragma once
 #include <boost/asio.hpp>
 
@@ -17,11 +25,19 @@ class LobbyClient {
 public:
   using Msg = Message<LobbyMsg>;
   using RemoteMsg = OwnedMessage<LobbySession, LobbyMsg>;
+
 public:
   LobbyClient(io::io_context&);
   ~LobbyClient();
 
   void Start();
+  void Send(const Msg&);
+
+  bool IsConnected() {return conn_->IsConnected();}
+
+  void Tick();
+
+private:
   void Heartbeat();
 
 private:
@@ -32,6 +48,5 @@ private:
   TSDeque<RemoteMsg> read_deque_;
   
   std::thread thread_;
-  std::thread biz_thread_;
 };
 }

@@ -1,3 +1,12 @@
+/**
+ * @file client_session.h
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * This is deprecated, do not use this.
+ */
+
 #pragma once
 #include <boost/asio.hpp>
 

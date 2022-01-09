@@ -1,11 +1,14 @@
+/**
+ * @file main.cpp
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include <iostream>
 #include <boost/asio.hpp>
 #include "lobby_server.h"
-
-#ifndef SERVER
-#define SERVER
-#undef CLIENT
-#endif
 
 int main() {
   boost::asio::io_context context;

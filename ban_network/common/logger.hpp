@@ -1,3 +1,11 @@
+/**
+ * @file logger.hpp
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #pragma once
 
 #include "common/time_util.hpp"

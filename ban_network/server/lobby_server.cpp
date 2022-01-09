@@ -1,3 +1,11 @@
+/**
+ * @file lobby_server.cpp
+ * @version 0.1
+ * @date 2022-01-09
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 #include "common/logger.hpp"
 #include "common/message.hpp"
 #include "common/lobby_session.h"
@@ -96,10 +104,10 @@ void LobbyServer::Accept() {
 }
 
 bool LobbyServer::OnConnect(std::shared_ptr<LobbySession> client, uint32_t id) {
-  Msg msg;
-  msg.header_.id_ = LobbyMsg::HEARTBEAT;
+  //Msg msg;
+  //msg.header_.id_ = LobbyMsg::HEARTBEAT;
 
-  client->Send(msg);
+  //client->Send(msg);
   return true;
 }
 
@@ -112,7 +120,7 @@ void LobbyServer::OnMessage(std::shared_ptr<LobbySession> client, Msg& msg) {
   case LobbyMsg::HEARTBEAT: {
     log::Logging("[DEBUG] [%d] Heartbeating", client->GetId());
     
-     Unicast(client, msg); // just echo!
+    Unicast(client, msg); // just echo!
 
     break;
   }
@@ -123,7 +131,7 @@ void LobbyServer::OnMessage(std::shared_ptr<LobbySession> client, Msg& msg) {
 }
 
 void LobbyServer::UpdateState() {
-  timer_.expires_from_now(io::chrono::milliseconds(1000));
+  timer_.expires_from_now(io::chrono::milliseconds(2000));
   timer_.async_wait(
     [this](const boost::system::error_code error)->void {
       if (error) {
