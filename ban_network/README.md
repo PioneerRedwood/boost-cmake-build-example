@@ -24,6 +24,6 @@ Making a server/client network using boost asio!
 
 ## server
 - server_option.h: The options used in the server.
-  - `SERVER_PORT`, `LOBBY_COUNT`, `NUM_PER_LOBBY` (The last of two variables not used in `ver0.1`)
+  - `SERVER_PORT`, `LOBBY_COUNT`, `NUM_PER_LOBBY` (The last two variables not used in `ver0.1`)
   - It can be replaced by a preprocessor in `CMakeLists.txt`
 - lobby_server.h/cc: The Server side.
