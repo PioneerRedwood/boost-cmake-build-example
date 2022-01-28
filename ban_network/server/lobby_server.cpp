@@ -119,7 +119,13 @@ void LobbyServer::OnMessage(std::shared_ptr<LobbySession> client, Msg& msg) {
   switch(msg.header_.id_) {
   case LobbyMsg::HEARTBEAT: {
     log::Logging("[DEBUG] [%d] Heartbeating", client->GetId());
-    
+    std::string timeStr;
+
+    time::GetTime(timeStr, TimeType::TIME);
+    if (!timeStr.empty()) {
+      msg.Write(timeStr);
+    }
+
     Unicast(client, msg); // just echo!
 
     break;

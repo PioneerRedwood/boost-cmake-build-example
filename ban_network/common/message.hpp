@@ -34,8 +34,8 @@ public:
 
 template<typename T>
 struct MessageHeader {
-  uint32_t size_ = 0;
-  T id_;
+	T id_;
+	uint32_t size_ = 0;
 };
 
 template<typename T>
