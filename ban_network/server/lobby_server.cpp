@@ -56,7 +56,10 @@ void LobbyServer::Unicast(std::shared_ptr<LobbySession> client, const Msg& msg) 
 void LobbyServer::Broadcast(const Msg& msg, std::shared_ptr<LobbySession> exclude = nullptr) {
   // bool is_invaild = false;
   // std::vector<uint32_t> temp;
-  // Broadcast does not work yet.
+  
+  for (std::shared_ptr<LobbySession> client : client_deque_) {
+    Unicast(client, msg);
+  }
 }
 
 void LobbyServer::Tick(std::size_t max = -1, bool is_wait = false) {
@@ -112,7 +115,7 @@ bool LobbyServer::OnConnect(std::shared_ptr<LobbySession> client, uint32_t id) {
 }
 
 void LobbyServer::OnDisconnect(std::shared_ptr<LobbySession> client) {
-  log::Logging("[DEBUG] removing client [%d]", client->GetId());
+  log::Logging("[DEBUG] OnDisconnect client [%d]", client->GetId());
 }
 
 void LobbyServer::OnMessage(std::shared_ptr<LobbySession> client, Msg& msg) {
@@ -130,7 +133,20 @@ void LobbyServer::OnMessage(std::shared_ptr<LobbySession> client, Msg& msg) {
 
     break;
   }
+  case LobbyMsg::CONNECTED_USERS_INFO: {
+    // TODO: Send connected users info
+
+    break;
+  }
+  case LobbyMsg::GENERAL_CHANNEL_MESSAGE: {
+    log::Logging("[DEBUG] [%d] General channel message", client->GetId());
+
+    Broadcast(msg);
+
+    break;
+  }
   default: {
+    log::Logging("[DEBUG] [%d] default message", client->GetId());
     break;
   }
   } // switch(data.header_.id_) -- LobbyMsg

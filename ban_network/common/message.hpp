@@ -138,6 +138,11 @@ struct Message
 enum class LobbyMsg : uint32_t {
   HEARTBEAT = 0,
 
+	// client to server 1000 ~
+	CONNECTED_USERS_INFO = 1001,
+	GENERAL_CHANNEL_MESSAGE = 1002,
+
+	// server to client 2000 ~
 };
 
 }

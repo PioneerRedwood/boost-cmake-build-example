@@ -134,8 +134,6 @@ void LobbySession::WriteBody() {
 }
 
 void LobbySession::ReadHeader() {
-  //log::Logging("[DEBUG] LobbySession::ReadHeader size is %d\nbefore read, state of temp_msg_ {ID:%d, SIZE: %d}",
-  //  sizeof(MessageHeader<LobbyMsg>), temp_msg_.header_.id_, temp_msg_.header_.size_);
   io::async_read(socket_,
     io::buffer(&temp_msg_.header_, sizeof(MessageHeader<LobbyMsg>)), 
     [this](boost::system::error_code error, std::size_t bytes) {
